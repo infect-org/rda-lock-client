@@ -20,7 +20,7 @@ section('RDA Lock Client', (section) => {
 
 
     section.test('Lock and unlock a resource', async() => {
-        const resourceId = 'lock-test-' + Math.random();
+        const resourceId = `lock-test-${Math.random()}`;
         const client = new LockClient({
             serviceRegistryHost: 'http://l.dns.porn:9000',
         });
@@ -33,7 +33,7 @@ section('RDA Lock Client', (section) => {
 
 
     section.test('Attempt a double lock on the same lock instance', async() => {
-        const resourceId = 'lock-test-' + Math.random();
+        const resourceId = `lock-test-${Math.random()}`;
         let err;
 
         const client = new LockClient({
@@ -56,7 +56,7 @@ section('RDA Lock Client', (section) => {
 
 
     section.test('Attempt a double lock on a different instance', async() => {
-        const resourceId = 'lock-test-' + Math.random();
+        const resourceId = `lock-test-${Math.random()}`;
         let err;
 
         const client = new LockClient({
@@ -84,7 +84,7 @@ section('RDA Lock Client', (section) => {
     section.test('Wait on a lock to become available', async() => {
         section.setTimeout(5000);
 
-        const resourceId = 'lock-test-' + Math.random();
+        const resourceId = `lock-test-${Math.random()}`;
 
         const client = new LockClient({
             serviceRegistryHost: 'http://l.dns.porn:9000',
@@ -101,6 +101,24 @@ section('RDA Lock Client', (section) => {
 
         await lock2.lock();
         await lock2.free();
+    });
+
+
+    section.test('Adopt a lock', async() => {
+        section.setTimeout(5000);
+
+        const resourceId = `lock-test-${Math.random()}`;
+
+        const client = new LockClient({
+            serviceRegistryHost: 'http://l.dns.porn:9000',
+        });
+        const lock = client.createLock(resourceId, { keepAlive: false });
+
+        await lock.lock();
+
+        const adoptedLock = client.adoptLock(lock.getId());
+
+        await adoptedLock.free();
     });
 
 

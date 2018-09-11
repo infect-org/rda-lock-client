@@ -45,6 +45,7 @@ export default class Lock {
      */
     constructor({
         keepAlive = true,
+        lockId,
         registryClient,
         resourceId,
         timeout = 60,
@@ -56,12 +57,23 @@ export default class Lock {
             throw new Error('Please provide a \'registryClient\' instance!');
         }
 
-        if (typeof resourceId !== 'string') {
-            throw new Error('Please provide a \'resourceId\' string!');
+
+        if (lockId) {
+            // lock adoption. assume that it was acquired already
+
+            this.lockId = lockId;
+            this.currentStatusName = 'acquired';
+            this.currentStatus = lockStatusMap.get(this.currentStatusName);
+        } else {
+            if (typeof resourceId !== 'string') {
+                throw new Error('Please provide a \'resourceId\' string!');
+            }
+
+            this.resourceId = resourceId;
+            this.setStatus('initialized');
         }
 
 
-        this.resourceId = resourceId;
         this.ttl = ttl;
         this.timeout = timeout;
         this.doKeepAlive = keepAlive;
@@ -77,7 +89,6 @@ export default class Lock {
         // back off time. An upper bound of 15 with a factor of 1.3 will
         // result in maximum pause of ~51 seconds (1.3**15 => 51.18)
         this.backOffUpperBound = 15;
-        this.setStatus('initialized');
     }
 
 
@@ -91,6 +102,21 @@ export default class Lock {
      */
     isAcquired() {
         return !!this.lockId;
+    }
+
+
+
+
+
+
+    /**
+     * return the lock id if it is available
+     *
+     * @return     {number}  the locks id
+     */
+    getId() {
+        if (this.isAcquired()) return this.lockId;
+        else throw new Error(`Cannot get lock id: the lock was not yet aquired. The locks status is ${this.currentStatusName}`);
     }
 
 

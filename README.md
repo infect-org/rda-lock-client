@@ -48,7 +48,7 @@ const client = new LockClient({
 ```
 
 
-### LockClient.creteLock
+### LockClient.createLock
 
 Factory method creating a new instance of the Lock class which represents one
 locking cycle for one resource. Needs a resource id to lock and takes optionally
@@ -61,9 +61,10 @@ some options:
 Returns an instance of the Lock class.
 
 ```javascript
-const client = new LockClient({
-    serviceRegistryHost: 'http://l.dns.porn:9000',
-    registryClient,
+const lock = client.createLock('cluster::67262', {
+    timeout: 60,
+    ttl: 10,
+    keepAlive: false,
 });
 ```
 
@@ -91,3 +92,46 @@ await lock.free();
 ```
 
 
+### LockClient.adoptLock
+
+Adopt a already created lock, lets you cancel or free it. Be aware that this 
+method doesn't validate the status or existence of the lock, so you may run 
+into interesting problems. The client just assumes that the lock has the status 
+acquired. 
+
+ATTENTION: the original lock needs to have the keepAlive option disabled!
+
+Needs a lock id to lock and takes optionally some options:
+
+- ttl: defines how long the lock persists if the lock client stops refreshing the locks (seconds)
+- timeout: how long to wait until a lock can be established (seconds)
+- keepAlie: boolean defining if the client should keep alive the lock in order to not run into the ttl
+
+Returns an instance of the Lock class.
+
+```javascript
+const lock = client.adoptLock(634265, {
+    timeout: 60,
+    ttl: 10,
+    keepAlive: false,
+});
+```
+
+
+### Lock.getId()
+
+Returns the id of a acquired lock.
+
+```javascript
+const lockId = lock.getId();
+```
+```
+
+
+### Lock.isAcquired()
+
+Tessl you if the lock wa acquired. Does not indicate if it was freed already.
+
+```javascript
+const lockId = lock.isAcquired();
+```

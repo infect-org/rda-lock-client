@@ -59,4 +59,36 @@ export default class LockClient {
             ttl,
         });
     }
+
+
+
+
+
+    /**
+     * adopt a already created lock, lets you cancel or free it. be aware that this method doesn't
+     * validate the status or existence of the lock, so you may run into interesting problems. The
+     * client just assumes that the lock has the status acquired
+     *
+     * @param      {<type>}   lockId          The lock id
+     * @param      {Object}   arg2            options
+     * @param      {number}   arg2.ttl        ttl for the lock. the lock is removed if the ttl is
+     *                                        reached. seconds
+     * @param      {number}   arg2.timeout    how long to wait until a lock can be acquired. seconds
+     * @param      {boolean}  arg2.keepAlive  should the lock be kept alive in order to prevent
+     *                                        hitting the TTL?
+     * @return     {Lock}     the lock instance
+     */
+    adoptLock(lockId, {
+        ttl = 30,
+        timeout = 60,
+        keepAlive = true,
+    } = {}) {
+        return new Lock({
+            keepAlive,
+            lockId,
+            registryClient: this.registryClient,
+            timeout,
+            ttl,
+        });
+    }
 }
