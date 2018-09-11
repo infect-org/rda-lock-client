@@ -125,7 +125,6 @@ Returns the id of a acquired lock.
 ```javascript
 const lockId = lock.getId();
 ```
-```
 
 
 ### Lock.isAcquired()
