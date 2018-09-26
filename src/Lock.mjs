@@ -1,4 +1,4 @@
-import superagent from 'superagent';
+import HTT2Client from '@distributed-systems/http2-client';
 import Delay from '@distributed-systems/delay';
 import log from 'ee-log';
 
@@ -72,6 +72,11 @@ export default class Lock {
             this.resourceId = resourceId;
             this.setStatus('initialized');
         }
+
+
+        // set up a global http2 client for fast request processing
+        this.httpClient = new HTT2Client();
+
 
 
         this.ttl = ttl;
@@ -220,8 +225,9 @@ export default class Lock {
         this.setStatus('freeing');
 
         const lockServiceHost = await this.registryClient.resolve('rda-lock');
-        await superagent.delete(`${lockServiceHost}/rda-lock.lock/${this.lockId}`)
-            .ok(res => [200].includes(res.status))
+
+        await this.httpClient.delete(`${lockServiceHost}/rda-lock.lock/${this.lockId}`)
+            .expect(200)
             .send().catch((err) => {
                 this.setStatus('failed');
                 throw err;
@@ -251,8 +257,8 @@ export default class Lock {
         await this.keepAliveTimeout.wait(timeoutTime);
 
         const lockServiceHost = await this.registryClient.resolve('rda-lock');
-        await superagent.patch(`${lockServiceHost}/rda-lock.lock/${this.lockId}`)
-            .ok(res => [200].includes(res.status))
+        await this.httpClient.patch(`${lockServiceHost}/rda-lock.lock/${this.lockId}`)
+            .expect(200)
             .send().catch((err) => {
                 this.setStatus('failed');
                 throw err;
@@ -277,20 +283,22 @@ export default class Lock {
         // get a fresh URL to the lock service each time because
         // lock service instances could go down
         const lockServiceHost = await this.registryClient.resolve('rda-lock');
-        const lockResponse = await superagent.post(`${lockServiceHost}/rda-lock.lock`)
-            .ok(res => [201, 409].includes(res.status))
+        const lockResponse = await this.httpClient.post(`${lockServiceHost}/rda-lock.lock`)
+            .expect(201, 409)
             .send({
                 ttl: this.ttl,
                 identifier: this.resourceId,
             });
 
 
-        if (lockResponse.status === 201) {
-            if (!lockResponse.body || !lockResponse.body.id) {
+        if (lockResponse.status(201)) {
+            const data = await lockResponse.getData();
+
+            if (!data || !data.id) {
                 throw new Error('Error while locking resource! Lock service returned insufficient data!');
             }
 
-            return lockResponse.body.id;
+            return data.id;
         }
     }
 

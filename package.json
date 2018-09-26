@@ -20,14 +20,14 @@
   },
   "homepage": "https://github.com/infect-org/rda-lock-client#readme",
   "devDependencies": {
-    "@distributed-systems/eslint-config": "^1.0.0",
+    "@distributed-systems/eslint-config": "^1.0.1",
+    "@distributed-systems/http2-client": "^1.2.2",
     "@infect/rda-service-manager": "^1.0.2",
-    "section-tests": "^2.2.2"
+    "section-tests": "^2.2.3"
   },
   "dependencies": {
     "@distributed-systems/delay": "^1.0.1",
-    "@infect/rda-service-registry-client": "^1.0.1",
-    "ee-log": "^3.0.7",
-    "superagent": "^3.8.3"
+    "@infect/rda-service-registry-client": "^2.0.0",
+    "ee-log": "^3.0.7"
   }
 }
