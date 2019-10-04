@@ -1,5 +1,5 @@
 import RegistryClient from '@infect/rda-service-registry-client';
-import Lock from './Lock.mjs';
+import Lock from './Lock.js';
 
 
 

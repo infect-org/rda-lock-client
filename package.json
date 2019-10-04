@@ -1,10 +1,10 @@
 {
   "name": "@infect/rda-lock-client",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Client for the RDA Lock Service",
-  "main": "src/LockClient.mjs",
+  "main": "src/LockClient.js",
   "scripts": {
-    "test": "node --experimental-modules --no-warnings --experimental-vm-modules ./node_modules/.bin/section ./test/*.mjs --dev --subenv-testing --log-level=error+ --log-module=*"
+    "test": "node --experimental-modules --no-warnings --experimental-vm-modules ./node_modules/.bin/section ./test/*.js --dev.testing --log-level=error+ --log-module=*"
   },
   "repository": {
     "type": "git",
@@ -13,7 +13,7 @@
   "keywords": [
     "RDA"
   ],
-  "author": "Michael van der Weg",
+  "author": "Lina van der Weg",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/infect-org/rda-lock-client/issues"
@@ -21,13 +21,14 @@
   "homepage": "https://github.com/infect-org/rda-lock-client#readme",
   "devDependencies": {
     "@distributed-systems/eslint-config": "^1.0.1",
-    "@distributed-systems/http2-client": "^1.2.2",
-    "@infect/rda-service-manager": "^1.0.2",
+    "@distributed-systems/http2-client": "^2.0.1",
+    "@infect/rda-service-manager": "^2.0.2",
     "section-tests": "^2.2.3"
   },
   "dependencies": {
     "@distributed-systems/delay": "^1.0.1",
-    "@infect/rda-service-registry-client": "^2.0.0",
+    "@infect/rda-service-registry-client": "^2.1.1",
     "ee-log": "^3.0.7"
-  }
+  },
+  "type": "module"
 }

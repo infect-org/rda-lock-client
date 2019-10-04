@@ -1,7 +1,7 @@
 import assert from 'assert';
 import section from 'section-tests';
 import ServiceManager from '@infect/rda-service-manager';
-import LockClient from '../src/LockClient.mjs';
+import LockClient from '../src/LockClient.js';
 
 
 
@@ -10,7 +10,7 @@ section('RDA Lock Client', (section) => {
 
     section.setup(async() => {
         sm = new ServiceManager({
-            args: '--dev --log-level=error+ --log-module=*'.split(' '),
+            args: '--dev.testing --log-level=error+ --log-module=*'.split(' '),
         });
 
         await sm.startServices('rda-service-registry');

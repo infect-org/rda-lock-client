@@ -17,4 +17,4 @@ node_modules
 
 coverage
 
-secrets.*.js
+secrets.*
