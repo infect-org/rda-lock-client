@@ -1,4 +1,5 @@
 import RegistryClient from '@infect/rda-service-registry-client';
+import HTT2Client from '@distributed-systems/http2-client';
 import Lock from './Lock.js';
 
 
@@ -29,7 +30,31 @@ export default class LockClient {
         } else {
             throw new Error('Please provide either a \'registryClient\' instance or the \'serviceRegistryHost\' URL!');
         }
+
+        this.httpClient = new HTT2Client();
     }
+
+
+
+
+
+
+    /**
+     * checks if a given lock exists. this method is pretty insecure because locks could be created
+     * while the response for this call is being process. just us this as an indicator, if the lock
+     * was created. don't depend on this for relevant processes.
+     *
+     * @param      {string}   resourceId  The resource identifier
+     */
+    async hasLock(resourceId) {
+        const lockServiceHost = await this.registryClient.resolve('rda-lock');
+        const response = await this.httpClient.get(`${lockServiceHost}/rda-lock.lock/${resourceId}`)
+            .expect(200, 404)
+            .send();
+
+        return response.status(200);
+    }
+
 
 
 

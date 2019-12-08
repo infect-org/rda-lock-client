@@ -32,6 +32,26 @@ section('RDA Lock Client', (section) => {
 
 
 
+    section.test('Check fo lock existence', async() => {
+        const resourceId = `lock-test-${Math.random()}`;
+        const client = new LockClient({
+            serviceRegistryHost: 'http://l.dns.porn:9000',
+        });
+
+        const lock = client.createLock(resourceId);
+        await lock.lock();
+
+        const exists = await client.hasLock(resourceId);
+        assert.equal(exists, true);
+
+        await lock.free();
+
+        const stillExists = await client.hasLock(resourceId);
+        assert.equal(stillExists, false);
+    });
+
+
+
     section.test('Attempt a double lock on the same lock instance', async() => {
         const resourceId = `lock-test-${Math.random()}`;
         let err;
