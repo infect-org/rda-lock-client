@@ -1,6 +1,6 @@
 {
   "name": "@infect/rda-lock-client",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "Client for the RDA Lock Service",
   "main": "src/LockClient.js",
   "scripts": {
